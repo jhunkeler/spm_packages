@@ -1,0 +1,18 @@
+--- Makefile.in.orig	2020-02-14 00:23:53.478030719 -0500
++++ Makefile.in	2020-02-14 00:24:47.868286258 -0500
+@@ -25,11 +25,11 @@ CFITSIO_MAJOR	= @CFITSIO_MAJOR@
+ CFITSIO_MINOR	= @CFITSIO_MINOR@
+ CFITSIO_SONAME	= @CFITSIO_SONAME@
+ 
+-prefix		= @prefix@
++prefix		= ${DESTDIR}@prefix@
+ exec_prefix	= @exec_prefix@
+-CFITSIO_BIN	= ${DESTDIR}@bindir@
+-CFITSIO_LIB	= ${DESTDIR}@libdir@
+-CFITSIO_INCLUDE	= ${DESTDIR}@includedir@
++CFITSIO_BIN	= @bindir@
++CFITSIO_LIB	= @libdir@
++CFITSIO_INCLUDE	= @includedir@
+ INSTALL_DIRS	= @INSTALL_ROOT@ ${CFITSIO_INCLUDE} ${CFITSIO_LIB} ${CFITSIO_LIB}/pkgconfig
+ 
+ 
