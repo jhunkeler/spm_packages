@@ -28,6 +28,8 @@ function build() {
 
 function package() {
     make install DESTDIR="${_pkgdir}"
-    mv "${_pkgdir}/${_prefix}/lib64"/* "${_pkgdir}/${_prefix}/lib"
-    rm -rf "${_pkgdir}/${_prefix}/lib64"
+    if [[ -d "${_pkgdir}/${_prefix}/lib64" ]]; then
+        mv "${_pkgdir}/${_prefix}/lib64"/* "${_pkgdir}/${_prefix}/lib"
+        rm -rf "${_pkgdir}/${_prefix}/lib64"
+    fi
 }
