@@ -39,7 +39,7 @@ function build() {
     #zlib="zlib zlibmodule.c ${CFLAGS} ${LDFLAGS} -lz"
     #echo "${zlib/=/ }" >> Modules/Setup
 
-    export CFLAGS="${CFLAGS} -I${build_runtime}/include/ncursesw"
+    export CFLAGS="${CFLAGS} -I${_runtime}/include/ncursesw"
     ./configure \
         --prefix="${_prefix}" \
         --enable-ipv6 \
@@ -64,6 +64,7 @@ function package() {
     ln -s pydoc3              "${_pkgdir}/${_prefix}"/bin/pydoc
     ln -s python${_basever}.1 "${_pkgdir}/${_prefix}"/share/man/man1/python.1
     chmod 755 "${_pkgdir}/${_prefix}"/lib/libpython${_basever}m.so
+    chmod 755 "${_pkgdir}/${_prefix}"/lib/libpython${_basever%.*}.so
 }
 
 
