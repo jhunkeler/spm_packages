@@ -7,9 +7,11 @@ sources=(
 )
 build_depends=(
     "xz"
+    "libsigsegv"
 )
 depends=(
     "patch"
+    "libsigsegv"
 )
 
 function prepare() {
