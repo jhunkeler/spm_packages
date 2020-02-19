@@ -9,6 +9,8 @@ build_depends=(
     "autoconf"
     "automake"
     "libtool"
+    "m4"
+    "gettext"
 )
 depends=()
 
@@ -19,7 +21,7 @@ function prepare() {
 }
 
 function build() {
-    ./buildconf.sh
+    autoreconf -i
     ./configure --prefix="${_prefix}" \
         --libdir="${_prefix}/lib"
     make -j${_maxjobs}
