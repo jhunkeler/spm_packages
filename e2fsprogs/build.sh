@@ -5,11 +5,12 @@ revision=0
 sources=(
     "https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/${name}/v${version}/${name}-${version}.tar.gz"
 )
-depends=(
+build_depends=(
     "autoconf"
     "automake"
     "libtool"
-)
+    )
+depends=()
 
 
 function prepare() {
