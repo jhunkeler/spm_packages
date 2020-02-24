@@ -9,6 +9,7 @@ sources=(
 build_depends=(
     "tar"
     "automake"
+    "tcl==${version}"
 )
 depends=(
     "tcl==${version}"
