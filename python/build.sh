@@ -1,6 +1,6 @@
 #!/bin/bash
 name=python
-version=3.7.6
+version=3.8.0
 _basever=${version%.*}
 revision=0
 sources=(
@@ -66,7 +66,13 @@ function package() {
     ln -s idle3               "${_pkgdir}/${_prefix}"/bin/idle
     ln -s pydoc3              "${_pkgdir}/${_prefix}"/bin/pydoc
     ln -s python${_basever}.1 "${_pkgdir}/${_prefix}"/share/man/man1/python.1
-    chmod 755 "${_pkgdir}/${_prefix}"/lib/libpython${_basever}m.so
-    chmod 755 "${_pkgdir}/${_prefix}"/lib/libpython${_basever%.*}.so
+
+    if [[ -f "${_pkgdir}/${_prefix}"/lib/libpython${_basever}m.so ]]; then
+        chmod 755 "${_pkgdir}/${_prefix}"/lib/libpython${_basever}m.so
+    fi
+
+    if [[ -f "${_pkgdir}/${_prefix}"/lib/libpython${_basever%.*}.so ]]; then
+        chmod 755 "${_pkgdir}/${_prefix}"/lib/libpython${_basever%.*}.so
+    fi
 }
 
