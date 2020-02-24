@@ -1,7 +1,7 @@
 #!/bin/bash
 disable_base=1
 name=binutils
-version=2.31.1
+version=2.34
 revision=0
 sources=(
     "https://ftp.gnu.org/gnu/${name}/${name}-${version}.tar.gz"
