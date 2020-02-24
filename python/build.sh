@@ -1,6 +1,6 @@
 #!/bin/bash
 name=python
-version=3.7.5
+version=3.7.6
 _basever=${version%.*}
 revision=0
 sources=(
@@ -42,9 +42,12 @@ function build() {
     export CFLAGS="${CFLAGS} -I${_runtime}/include/ncursesw"
     ./configure \
         --prefix="${_prefix}" \
+        --libdir="${_prefix}/lib" \
         --enable-ipv6 \
         --enable-loadable-sqlite-extensions \
         --enable-shared \
+        --with-tcltk-includes="$(pkg-config --cflags tcl) $(pkg-config --cflags tk)" \
+        --with-tcltk-libs="$(pkg-config --libs tcl) $(pkg-config --libs tk)" \
         --with-computed-gotos \
         --with-dbmliborder=gdbm:ndbm \
         --with-pymalloc \
@@ -66,5 +69,4 @@ function package() {
     chmod 755 "${_pkgdir}/${_prefix}"/lib/libpython${_basever}m.so
     chmod 755 "${_pkgdir}/${_prefix}"/lib/libpython${_basever%.*}.so
 }
-
 
