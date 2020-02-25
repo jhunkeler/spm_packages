@@ -1,6 +1,6 @@
 #!/bin/bash
 name=python
-version=3.8.0
+version=3.8.1
 _basever=${version%.*}
 revision=0
 sources=(
