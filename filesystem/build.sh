@@ -41,9 +41,9 @@ function package() {
             mkdir -p "${d}"
             chmod 0755 "${d}"
         done
+	ln -sfr lib lib64
         chmod 777 tmp
         chmod 777 var/tmp
-        ln -srf lib lib64
     popd
 
 }

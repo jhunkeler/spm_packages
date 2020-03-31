@@ -1,19 +1,17 @@
 #!/bin/bash
-name=tar
-version=1.32
+name=libXau
+version=1.0.9
 revision=0
 sources=(
-    "http://mirror.rit.edu/gnu/${name}/${name}-${version}.tar.gz"
+    "https://www.x.org/archive/individual/lib/${name}-${version}.tar.gz"
 )
 build_depends=(
+    "pkgconf"
 )
 depends=(
-    "bzip2"
-    "gzip"
-    "xz"
-    "zlib"
+    "xorg-util-macros"
+    "xorg-xproto"
 )
-
 
 function prepare() {
     tar xf ${name}-${version}.tar.gz
@@ -21,14 +19,10 @@ function prepare() {
 }
 
 function build() {
-    export FORCE_UNSAFE_CONFIGURE=1
-    ./configure --prefix=${_prefix} \
-        --without-selinux
+    ./configure --prefix=${_prefix}
     make -j${_maxjobs}
 }
 
 function package() {
     make install DESTDIR="${_pkgdir}"
 }
-
-

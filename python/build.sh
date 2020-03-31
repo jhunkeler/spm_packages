@@ -1,17 +1,17 @@
 #!/bin/bash
 name=python
-version=3.8.1
+version=3.8.2
 _basever=${version%.*}
 revision=0
 sources=(
     "https://www.python.org/ftp/python/${version}/Python-${version}.tar.xz"
 )
 build_depends=(
-    "sed"
     "grep"
-    "automake"
-    "autoconf"
+    "sed"
+    "pkgconf"
     "xz"
+    "tk==8.6.9"
 )
 depends=(
     "bzip2"
@@ -23,9 +23,9 @@ depends=(
     "ncurses"
     "openssl==1.1.1d"
     "tar"
+    "tk==8.6.9"
     "readline"
     "sqlite"
-    "tk"
     "zlib"
 )
 

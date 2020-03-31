@@ -1,22 +1,19 @@
 #!/bin/bash
-name=automake
-version=1.16.1
+name=xorg-xproto
+shortname=xorgproto
+version=2018.2
 revision=0
 sources=(
-    "http://mirror.rit.edu/gnu/${name}/${name}-${version}.tar.xz"
+    "https://www.x.org/archive/individual/proto/${shortname}-${version}.tar.gz"
 )
 build_depends=(
-    "findutils"
-    "help2man"
 )
 depends=(
-    "autoconf"
 )
 
-
 function prepare() {
-    tar xf ${name}-${version}.tar.xz
-    cd ${name}-${version}
+    tar xf ${shortname}-${version}.tar.gz
+    cd ${shortname}-${version}
 }
 
 function build() {

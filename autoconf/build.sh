@@ -5,11 +5,13 @@ revision=0
 sources=(
     "http://mirror.rit.edu/gnu/${name}/${name}-${version}.tar.xz"
 )
+build_depends=(
+    "m4"
+)
 depends=(
     "m4"
     "xz"
 )
-build_depends=("${depends[@]}")
 
 
 function prepare() {

@@ -6,22 +6,27 @@ sources=()
 build_depends=(
     "git"
     "python"
+    "gcc==8.4.0"
 )
 depends=(
     "cfitsio"
 )
 
+_waf_version=2.0.18
 
 function prepare() {
+    curl -L https://waf.io/waf-${_waf_version} > waf
+    chmod +x waf
+
     git clone https://github.com/spacetelescope/${name}
     cd ${name}
     git checkout ${version}
-    curl -L https://waf.io/waf-2.0.18 >../waf
-    chmod +x ../waf
 }
 
 function build() {
     ../waf configure --prefix=${_prefix}
+echo debug
+bash
 }
 
 function package() {

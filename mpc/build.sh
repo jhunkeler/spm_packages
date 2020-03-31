@@ -1,15 +1,14 @@
 #!/bin/bash
-name=libtool
-version=2.4.6
+name=mpc
+version=1.0.3
 revision=0
 sources=(
-    "http://ftp.gnu.org/gnu/${name}/${name}-${version}.tar.gz"
+    "https://gcc.gnu.org/pub/gcc/infrastructure/${name}-${version}.tar.gz"
 )
-build_depends=(
-    "m4"
-)
+build_depends=()
 depends=(
-    "tar"
+    "gmp"
+    "mpfr"
 )
 
 function prepare() {
@@ -18,7 +17,7 @@ function prepare() {
 }
 
 function build() {
-    ./configure --prefix="${_prefix}"
+    ./configure --prefix=${_prefix}
     make -j${_maxjobs}
 }
 

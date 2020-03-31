@@ -1,24 +1,23 @@
 #!/bin/bash
-name=libtool
-version=2.4.6
+name=gmp
+version=6.1.0
 revision=0
 sources=(
-    "http://ftp.gnu.org/gnu/${name}/${name}-${version}.tar.gz"
+    "https://gcc.gnu.org/pub/gcc/infrastructure/${name}-${version}.tar.bz2"
 )
 build_depends=(
+    "bzip2"
     "m4"
 )
-depends=(
-    "tar"
-)
+depends=()
 
 function prepare() {
-    tar xf ${name}-${version}.tar.gz
+    tar xf ${name}-${version}.tar.bz2
     cd ${name}-${version}
 }
 
 function build() {
-    ./configure --prefix="${_prefix}"
+    ./configure --prefix=${_prefix}
     make -j${_maxjobs}
 }
 

@@ -1,19 +1,18 @@
 #!/bin/bash
-name=tar
-version=1.32
+name=xcb-util
+version=0.4.0
 revision=0
 sources=(
-    "http://mirror.rit.edu/gnu/${name}/${name}-${version}.tar.gz"
+    "https://www.x.org/archive/individual/xcb/${name}-${version}.tar.gz"
 )
 build_depends=(
+    "pkgconf"
 )
 depends=(
-    "bzip2"
-    "gzip"
-    "xz"
-    "zlib"
+    "libxcb"
+    "libXau"
+    "xcb-proto"
 )
-
 
 function prepare() {
     tar xf ${name}-${version}.tar.gz
@@ -21,14 +20,10 @@ function prepare() {
 }
 
 function build() {
-    export FORCE_UNSAFE_CONFIGURE=1
-    ./configure --prefix=${_prefix} \
-        --without-selinux
+    ./configure --prefix=${_prefix}
     make -j${_maxjobs}
 }
 
 function package() {
     make install DESTDIR="${_pkgdir}"
 }
-
-

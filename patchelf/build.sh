@@ -7,8 +7,7 @@ sources=("https://github.com/NixOS/${name}/archive/${version}.tar.gz")
 build_depends=(
     "autoconf"
     "automake"
-    "gcc"
-    "binutils"
+    "m4"
 )
 depends=()
 

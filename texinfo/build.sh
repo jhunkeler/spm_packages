@@ -1,17 +1,12 @@
 #!/bin/bash
-name=automake
-version=1.16.1
+name=texinfo
+version=6.7
 revision=0
 sources=(
     "http://mirror.rit.edu/gnu/${name}/${name}-${version}.tar.xz"
 )
-build_depends=(
-    "findutils"
-    "help2man"
-)
-depends=(
-    "autoconf"
-)
+build_depends=()
+depends=()
 
 
 function prepare() {

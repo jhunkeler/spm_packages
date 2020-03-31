@@ -5,7 +5,12 @@ revision=0
 sources=(
     "http://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/${name}-${version}.tar.gz"
 )
-depends=("curl")
+build_depends=(
+    "patch"
+)
+depends=(
+    "curl"
+)
 
 
 function prepare() {

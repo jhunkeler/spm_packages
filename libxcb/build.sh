@@ -1,15 +1,19 @@
 #!/bin/bash
-name=pkg-config
-version=0.29.2
+name=libxcb
+version=1.14
 revision=0
 sources=(
-    "https://pkg-config.freedesktop.org/releases/${name}-${version}.tar.gz"
+    "https://www.x.org/archive/individual/xcb/${name}-${version}.tar.gz"
 )
 build_depends=(
-    "automake"
-    "autoconf"
+    "pkgconf"
+    "python"
 )
-depends=()
+depends=(
+    "libXau"
+    "xorg-util-macros"
+    "xcb-proto"
+)
 
 function prepare() {
     tar xf ${name}-${version}.tar.gz
@@ -17,12 +21,10 @@ function prepare() {
 }
 
 function build() {
-    ./configure --prefix="${_prefix}"
+    ./configure --prefix=${_prefix}
     make -j${_maxjobs}
 }
 
 function package() {
     make install DESTDIR="${_pkgdir}"
 }
-
-

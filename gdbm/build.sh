@@ -6,8 +6,6 @@ sources=(
     "http://mirror.rit.edu/gnu/${name}/${name}-${version}.tar.gz"
 )
 build_depends=(
-    "automake"
-    "autoconf"
 )
 depends=(
     "readline"

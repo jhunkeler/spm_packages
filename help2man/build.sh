@@ -1,19 +1,18 @@
 #!/bin/bash
-name=libtool
-version=2.4.6
+name=help2man
+version=1.47.12
 revision=0
 sources=(
-    "http://ftp.gnu.org/gnu/${name}/${name}-${version}.tar.gz"
+    "https://ftp.gnu.org/gnu/${name}/${name}-${version}.tar.xz"
 )
 build_depends=(
-    "m4"
+    "perl"
+    "xz"
 )
-depends=(
-    "tar"
-)
+depends=()
 
 function prepare() {
-    tar xf ${name}-${version}.tar.gz
+    tar xf ${name}-${version}.tar.xz
     cd ${name}-${version}
 }
 
