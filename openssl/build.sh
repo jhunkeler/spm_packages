@@ -16,10 +16,13 @@ function prepare() {
 }
 
 function build() {
-    export LDFLAGS="-Wl,-rpath=${_runtime}/lib -L${_runtime}/lib"
     export KERNEL_BITS=64
     export TARGET=linux-x86_64
-    #mkdir -p ${build_runtime}/lib
+
+    if [[ $(uname -s) == Darwin ]]; then
+        TARGET=darwin64-x86_64-cc
+    fi
+
     ./Configure \
         --prefix="${_prefix}" \
         --openssldir="${_prefix}/etc/ssl" \

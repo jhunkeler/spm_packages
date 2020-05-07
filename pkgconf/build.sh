@@ -17,6 +17,10 @@ function prepare() {
     tar xf ${name}-${version}.tar.gz
     # an ugly release tag makes for an ugly directory, fyi
     cd ${name}-${name}-${version}
+    if [[ $(uname -s) == Darwin ]]; then
+        # extra -rpath kills the build
+        LDFLAGS="-L${_runtime}/lib"
+    fi
 }
 
 function build() {
@@ -30,10 +34,9 @@ function build() {
 }
 
 function package() {
+    target="$(./config.guess)"
     make install DESTDIR="${_pkgdir}"
     ln -s pkgconf "${_pkgdir}${_prefix}/bin/pkg-config"
-    ln -s pkgconf "${_pkgdir}${_prefix}/bin/x86_64-pc-linux-gnu-pkg-config"
+    ln -s pkgconf "${_pkgdir}${_prefix}/bin/${target%%.*}-pkg-config"
     ln -s pkgconf.1 "${_pkgdir}${_prefix}/share/man/man1/pkg-config.1"
 }
-
-

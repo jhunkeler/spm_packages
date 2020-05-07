@@ -12,10 +12,15 @@ build_depends=(
 depends=(
     "pcre"
 )
+lib_type=so
 
 function prepare() {
     tar xf ${name}${version}-src.tar.gz
     cd ${name}${version}
+
+    if [[ $(uname -s) == Darwin ]]; then
+        lib_type=dylib
+    fi
 }
 
 function build() {
@@ -26,5 +31,5 @@ function build() {
 
 function package() {
     make install DESTDIR="${_pkgdir}"
-    chmod 755 "${_pkgdir}/${_prefix}"/lib/*.so
+    chmod 755 "${_pkgdir}/${_prefix}"/lib/*.${lib_type}
 }

@@ -6,8 +6,6 @@ sources=(
     "https://ftp.gnu.org/gnu/${name}/${name}-${version}.tar.xz"
 )
 build_depends=(
-    "automake"
-    "autoconf"
     "xz"
 )
 depends=(

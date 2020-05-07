@@ -6,15 +6,17 @@ sources=(
     "http://mirror.rit.edu/gnu/${name}/${name}-${version}.tar.gz"
 )
 build_depends=(
-    "automake"
-    "autoconf"
 )
 depends=()
 
+lib_type=so
 
 function prepare() {
     tar xf ${name}-${version}.tar.gz
     cd ${name}-${version}
+    if [[ $(uname -s) == Darwin ]]; then
+        lib_type=dylib
+    fi
 }
 
 function build() {
@@ -40,21 +42,16 @@ function package() {
 
     # fool packages looking to link to non-wide-character ncurses libraries
     for lib in ncurses ncurses++ form panel menu; do
-      echo "INPUT(-l${lib}w)" > "${_pkgdir}/${_prefix}/lib/lib${lib}.so"
-      ln -s ${lib}w.pc "${_pkgdir}/${_prefix}/lib/pkgconfig/${lib}.pc"
-    done
-
-    for lib in tic tinfo; do
-      echo "INPUT(libncursesw.so.${version:0:1})" > "${_pkgdir}/${_prefix}/lib/lib${lib}.so"
-      ln -s libncursesw.so.${version:0:1} "${_pkgdir}/${_prefix}/lib/lib${lib}.so.${version:0:1}"
-      ln -s ncursesw.pc "${_pkgdir}${_prefix}/lib/pkgconfig/${lib}.pc"
+      ln -s lib${lib}w.${lib_type} "${_pkgdir}${_prefix}/lib/lib${lib}.${lib_type}"
+      ln -s lib${lib}w.a "${_pkgdir}${_prefix}/lib/lib${lib}.a"
+      ln -s ${lib}w.pc "${_pkgdir}${_prefix}/lib/pkgconfig/${lib}.pc"
     done
 
     # some packages look for -lcurses during build
-    echo 'INPUT(-lncursesw)' > "${_pkgdir}${_prefix}/lib/libcursesw.so"
-    ln -s libncurses.so "${_pkgdir}/${_prefix}/lib/libcurses.so"
+    #echo 'INPUT(-lncursesw)' > "${_pkgdir}${_prefix}/lib/libcursesw.so"
+    ln -s libncurses.${lib_type} "${_pkgdir}${_prefix}/lib/libcurses.${lib_type}"
 
     # some packages include from ncurses/
-    ln -s ncursesw "${_pkgdir}/${_prefix}/include/ncurses"
+    ln -s ncursesw "${_pkgdir}${_prefix}/include/ncurses"
 
 }

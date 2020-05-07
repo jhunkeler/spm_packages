@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 name=python
 version=3.8.2
 _basever=${version%.*}
@@ -15,7 +15,7 @@ build_depends=(
 )
 depends=(
     "bzip2"
-    "e2fsprogs"
+    $([[ $(uname) == Linux ]] && echo "e2fsprogs")
     "gdbm"
     "gzip"
     "libexpat"
@@ -28,11 +28,16 @@ depends=(
     "sqlite"
     "zlib"
 )
+lib_type=so
 
 
 function prepare() {
     tar xf Python-${version}.tar.xz
     cd Python-${version}
+
+    if [[ $(uname -s) == Darwin ]]; then
+        lib_type=dylib
+    fi
 }
 
 function build() {
@@ -46,8 +51,8 @@ function build() {
         --enable-ipv6 \
         --enable-loadable-sqlite-extensions \
         --enable-shared \
-        --with-tcltk-includes="$(pkg-config --cflags tcl) $(pkg-config --cflags tk)" \
-        --with-tcltk-libs="$(pkg-config --libs tcl) $(pkg-config --libs tk)" \
+        $([[ $bootstrap == 0 ]] && echo --with-tcltk-includes="$(pkg-config --cflags tcl) $(pkg-config --cflags tk)") \
+        $([[ $bootstrap == 0 ]] && echo --with-tcltk-libs="$(pkg-config --libs tcl) $(pkg-config --libs tk)") \
         --with-computed-gotos \
         --with-dbmliborder=gdbm:ndbm \
         --with-pymalloc \
@@ -67,12 +72,11 @@ function package() {
     ln -s pydoc3              "${_pkgdir}/${_prefix}"/bin/pydoc
     ln -s python${_basever}.1 "${_pkgdir}/${_prefix}"/share/man/man1/python.1
 
-    if [[ -f "${_pkgdir}/${_prefix}"/lib/libpython${_basever}m.so ]]; then
-        chmod 755 "${_pkgdir}/${_prefix}"/lib/libpython${_basever}m.so
+    if [[ -f "${_pkgdir}/${_prefix}"/lib/libpython${_basever}m.${lib_type} ]]; then
+        chmod 755 "${_pkgdir}/${_prefix}"/lib/libpython${_basever}m.${lib_type}
     fi
 
-    if [[ -f "${_pkgdir}/${_prefix}"/lib/libpython${_basever%.*}.so ]]; then
-        chmod 755 "${_pkgdir}/${_prefix}"/lib/libpython${_basever%.*}.so
+    if [[ -f "${_pkgdir}/${_prefix}"/lib/libpython${_basever%.*}.${lib_type} ]]; then
+        chmod 755 "${_pkgdir}/${_prefix}"/lib/libpython${_basever%.*}.${lib_type}
     fi
 }
-

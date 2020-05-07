@@ -12,13 +12,18 @@ build_depends=(
     "tcl==${version}"
 )
 depends=(
-    "libX11"
+    $([[ $(uname -s) == Linux ]] && echo "libX11")
     "tcl==${version}"
 )
+lib_type=so
 
 function prepare() {
     tar xf ${name}${version_full}-src.tar.gz
     cd ${name}${version}
+
+    if [[ $(uname -s) == Darwin ]]; then
+        lib_type=dylib
+    fi
 }
 
 function build() {
@@ -32,7 +37,7 @@ function build() {
 function package() {
     make install DESTDIR="${_pkgdir}"
     pushd "${_pkgdir}/${_prefix}"/bin
-        ln -s "${_pkgdir}/${_prefix}"/bin/wish${version%.*} wish
+        ln -s wish${version%.*} "${_pkgdir}/${_prefix}"/bin/wish
     popd
-    chmod 755 "${_pkgdir}/${_prefix}"/lib/*.so
+    chmod 755 "${_pkgdir}/${_prefix}"/lib/*.${lib_type}
 }

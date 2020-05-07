@@ -10,7 +10,6 @@ depends=()
 
 function prepare() {
     tar xf util-macros-${version}.tar.gz
-find
     cd util-macros-${version}
 }
 

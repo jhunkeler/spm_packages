@@ -21,6 +21,10 @@ depends=(
 function prepare() {
     tar xf ${name}-autoconf-${_v}.tar.gz
     cd ${name}-autoconf-${_v}
+    if [[ $(uname -s) == Darwin ]]; then
+        # extra -rpath kills the build
+        LDFLAGS="-L${_runtime}/lib"
+    fi
 }
 
 function build() {
