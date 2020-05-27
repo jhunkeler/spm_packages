@@ -15,7 +15,6 @@ build_depends=(
 )
 depends=(
     "bzip2"
-    $([[ $(uname) == Linux ]] && echo "e2fsprogs")
     "gdbm"
     "gzip"
     "libexpat"
@@ -28,6 +27,8 @@ depends=(
     "sqlite"
     "zlib"
 )
+[[ $(uname) == Linux ]] && depends+=("e2fsprogs")
+
 lib_type=so
 
 
@@ -41,18 +42,23 @@ function prepare() {
 }
 
 function build() {
-    #zlib="zlib zlibmodule.c ${CFLAGS} ${LDFLAGS} -lz"
-    #echo "${zlib/=/ }" >> Modules/Setup
-
     export CFLAGS="${CFLAGS} -I${_runtime}/include/ncursesw"
+
+    if [[ $(uname -s) == Darwin ]]; then
+        CFLAGS="${CFLAGS} -I/usr/X11/include"
+        LDFLAGS="${LDFLAGS} -L/usr/X11/lib"
+        darwin_opt="--disable-framework"
+    fi
+
     ./configure \
         --prefix="${_prefix}" \
         --libdir="${_prefix}/lib" \
+        ${darwin_opt} \
         --enable-ipv6 \
         --enable-loadable-sqlite-extensions \
         --enable-shared \
-        $([[ $bootstrap == 0 ]] && echo --with-tcltk-includes="$(pkg-config --cflags tcl) $(pkg-config --cflags tk)") \
-        $([[ $bootstrap == 0 ]] && echo --with-tcltk-libs="$(pkg-config --libs tcl) $(pkg-config --libs tk)") \
+        --with-tcltk-includes="$(pkg-config --cflags tcl) $(pkg-config --cflags tk)" \
+        --with-tcltk-libs="$(pkg-config --libs tcl) $(pkg-config --libs tk)" \
         --with-computed-gotos \
         --with-dbmliborder=gdbm:ndbm \
         --with-pymalloc \

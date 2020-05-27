@@ -8,36 +8,41 @@ sources=(
 build_depends=(
     "autoconf"
     "automake"
-    "curl"
-    "gettext"
     "libtool"
-    "openssl"
-    "pcre"
-    "tk"
-    "zlib"
+    "pkgconf"
 )
 depends=(
     "curl"
+    "gettext"
+    "libiconv"
     "openssl"
     "pcre"
+    "perl"
+    "python"
     "tk"
     "zlib"
 )
-
 
 function prepare() {
     tar xf v${version}.tar.gz
     cd ${name}-${version}
+
+    if [[ $(uname -s) == Darwin ]]; then
+        LDFLAGS="-L${_runtime}/lib"
+    fi
 }
 
 function build() {
-    export LDFLAGS="${LDFLAGS} -Wl,-rpath=${_prefix}/lib"
     make configure
+    spm_debug_shell
     ./configure --prefix=${_prefix} \
         --libdir=${_prefix}/lib \
         --with-curl \
         --with-expat \
-        --with-tcltk
+        --with-tcltk \
+        --with-python=${_runtime} \
+        --with-perl=${_runtime} \
+        --with-zlib=${_runtime}
     make -j${_maxjobs}
 }
 

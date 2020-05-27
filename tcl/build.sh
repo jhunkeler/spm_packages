@@ -31,5 +31,6 @@ function build() {
 
 function package() {
     make install DESTDIR="${_pkgdir}"
-    chmod 755 "${_pkgdir}/${_prefix}"/lib/*.${lib_type}
+    chmod 755 "${_pkgdir}${_prefix}"/lib/*.${lib_type}
+    ln -s tclsh${version%.*} "${_pkgdir}${_prefix}"/bin/tclsh
 }

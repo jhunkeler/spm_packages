@@ -13,10 +13,13 @@ build_depends=(
     "zlib"
 )
 depends=(
-    "binutils"
+    "isl"
     "mpc"
+    "mpfr"
+    "gmp"
     "zlib"
 )
+[[ $(uname -s) == Linux ]] && depends+=("binutils")
 
 src=${name}-${version}
 blddir=${src}_build
@@ -26,7 +29,8 @@ function prepare() {
     tar xf cloog-${version_cloog}.tar.gz -C ${src}
     pushd ${src}
         ln -s cloog-${version_cloog} cloog
-        sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
+        cp gcc/Makefile.in gcc/Makefile.in.orig
+        sed 's@\./fixinc\.sh@-c true@' gcc/Makefile.in.orig > gcc/Makefile.in
         #sed -i '/m64=/s/lib64/lib/' gcc/config/i386/t-linux64
         #./contrib/download_prerequisites
     popd
@@ -40,6 +44,13 @@ function build() {
     unset CPPFLAGS
     unset LDFLAGS
 
+    opts=()
+    if [[ $(uname -s) == Darwin ]]; then
+        sdk_path=$(xcrun --sdk macosx --show-sdk-path)
+        opts+=(--with-native-system-header-dir=/usr/include)
+        opts+=(--with-sysroot="${sdk_path}")
+    fi
+
     ../${src}/configure \
             --prefix=${_prefix} \
             --libdir=${_prefix}/lib \
@@ -50,6 +61,7 @@ function build() {
             --disable-werror \
             --disable-libunwind-exceptions \
             --disable-libstdcxx-pch \
+            ${opts[@]} \
             --with-system-zlib \
             --with-tune=generic \
             --with-gmp=${_runtime} \
@@ -69,9 +81,12 @@ function build() {
 
 function package() {
     mkdir -p "${_pkgdir}${_prefix}"/lib
-    pushd "${_pkgdir}${_prefix}"
-        ln -sfr lib lib64
-    popd
+
+    if [[ $(uname -s) == Linux ]]; then
+        pushd "${_pkgdir}${_prefix}"
+            ln -sf lib lib64
+        popd
+    fi
 
     make install-strip DESTDIR="${_pkgdir}"
 

@@ -17,7 +17,15 @@ function prepare() {
 }
 
 function build() {
-    ./configure --prefix=${_prefix}
+    opts=()
+
+    if [[ $(uname -s) == Darwin ]]; then
+        LDFLAGS="-L${_runtime}/lib"
+        opts+=(--disable-assembly)
+    fi
+
+    ./configure --prefix=${_prefix} \
+        ${opts[@]}
     make -j${_maxjobs}
 }
 

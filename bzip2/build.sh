@@ -34,7 +34,7 @@ function package() {
     lib_format_short=${lib_type}.${version%.*}
     if [[ $(uname -s) == Darwin ]]; then
         lib_format_darwin=${version}.${lib_type}
-        lib_format_darwin_short=${version%.*}.${lib_type}
+        lib_format_darwin_short="${version%.*}".${lib_type}
 
         mv libbz2.${lib_format} libbz2.${lib_format_darwin}
         # Remove remaining Linux-style shared libraries
@@ -47,6 +47,10 @@ function package() {
         # Reset LC_ID_DYLIB to use expected naming conventions
         install_name_tool -id libbz2.${lib_format_darwin_short} \
             libbz2.${lib_format_darwin}
+
+        # Reset LC_LOAD_DYLIB record to use expected naming conventions
+        install_name_tool -change libbz2.${lib_format_short} libbz2.${lib_format_darwin_short} \
+            bzip2-shared
 
         lib_format=${lib_format_darwin}
         lib_format_short=${lib_format_darwin_short}

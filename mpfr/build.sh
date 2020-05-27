@@ -15,6 +15,9 @@ depends=(
 function prepare() {
     tar xf ${name}-${version}.tar.bz2
     cd ${name}-${version}
+    if [[ $(uname -s) == Darwin ]]; then
+        LDFLAGS="-L${_runtime}/lib"
+    fi
 }
 
 function build() {

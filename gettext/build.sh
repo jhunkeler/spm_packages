@@ -18,7 +18,21 @@ function prepare() {
 }
 
 function build() {
-    ./configure --prefix=${_prefix}
+    conf=()
+    if [[ $(uname -s) == Darwin ]]; then
+        conf+=(--with-included-gettext)
+        conf+=(--with-included-glib)
+        conf+=(--with-included-libcroco)
+        conf+=(--with-included-libunistring)
+        conf+=(--disable-java)
+        conf+=(--disable-csharp)
+        conf+=(--without-git)
+        conf+=(--without-cvs)
+        conf+=(--without-xz)
+    fi
+
+    ./configure --prefix=${_prefix} \
+        ${conf[@]}
     make -j${_maxjobs}
 }
 

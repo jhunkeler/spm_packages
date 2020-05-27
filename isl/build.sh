@@ -1,18 +1,20 @@
 #!/bin/bash
-name=mpc
-version=1.0.3
+name=isl
+version=0.18
 revision=0
 sources=(
-    "https://gcc.gnu.org/pub/gcc/infrastructure/${name}-${version}.tar.gz"
+    "https://gcc.gnu.org/pub/gcc/infrastructure/${name}-${version}.tar.bz2"
 )
-build_depends=()
+build_depends=(
+    "bzip2"
+)
 depends=(
     "gmp"
     "mpfr"
 )
 
 function prepare() {
-    tar xf ${name}-${version}.tar.gz
+    tar xf ${name}-${version}.tar.bz2
     cd ${name}-${version}
 
     if [[ $(uname -s) == Darwin ]]; then
