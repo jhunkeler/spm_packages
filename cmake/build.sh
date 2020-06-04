@@ -5,7 +5,9 @@ revision=0
 sources=(
     "https://github.com/Kitware/CMake/releases/download/v${version}/${name}-${version}.tar.gz"
 )
-depends=()
+depends=(
+    "curl"
+)
 
 
 function prepare() {

@@ -13,6 +13,7 @@ depends=(
 function prepare() {
     tar xf ${name}-${version}.tar.gz
     cd ${name}-${version}
+    export LDFLAGS="-Wl,-rpath=${_runtime}"
 }
 
 function build() {

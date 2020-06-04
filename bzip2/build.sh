@@ -12,23 +12,30 @@ lib_type=so
 function prepare() {
     tar xf ${name}-${version}.tar.gz
     cd ${name}-${version}
+    cp Makefile Makefile.orig
+    cp Makefile-libbz2_so Makefile-libbz2_so.orig
+
+    sed -e 's|$(PREFIX)|$(DESTDIR)$(PREFIX)|g' < Makefile.orig > Makefile
 
     if [[ $(uname -s) == Darwin ]]; then
         # Rotate the elder signs 14.8 degrees counter-clockwise
         lib_type=dylib
         cp Makefile Makefile.orig
         cp Makefile-libbz2_so Makefile-libbz2_so.orig
-        sed -e 's|$(PREFIX)|$(DESTDIR)$(PREFIX)|g' -e 's|2\.so|2.dylib|g' < Makefile.orig > Makefile
+        sed -e 's|2\.so|2.dylib|g' < Makefile.orig > Makefile
         sed -e 's|-soname|-install_name|g' -e 's|2\.so|2.dylib|g' < Makefile-libbz2_so.orig > Makefile-libbz2_so
     fi
+
 }
 
 function build() {
+    LDFLAGS="$LDFLAGS -fPIC"
     make bzip2 bzip2recover CC="gcc $CFLAGS $LDFLAGS"
     make -f Makefile-libbz2_so CC="gcc $CFLAGS $LDFLAGS"
 }
 
 function package() {
+    set -x
     # Wow, this makefile is horrible. Fix shared library names.
     lib_format=${lib_type}.${version}
     lib_format_short=${lib_type}.${version%.*}
@@ -61,6 +68,7 @@ function package() {
 
     # Install binaries
     cp -a bzip2-shared "${_pkgdir}${_prefix}"/bin/bzip2
+    ln -s libbz2.${lib_format} libbz2.${lib_type}
     cp -a libbz2.${lib_format} "${_pkgdir}${_prefix}"/lib
     cp -a libbz2.${lib_format_short} "${_pkgdir}${_prefix}"/lib
     cp -a libbz2.${lib_type} "${_pkgdir}${_prefix}"/lib

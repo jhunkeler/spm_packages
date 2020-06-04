@@ -8,6 +8,7 @@ sources=(
 build_depends=(
     "bzip2"
     "tar"
+    "patch"
 )
 depends=(
     "bzip2"
@@ -33,29 +34,27 @@ function prepare() {
 function build() {
     DEFINES=
     if [[ $(uname -s) == Linux ]]; then
-        DEFINES='-DACORN_FTYPE_NFS -DWILD_STOP_AT_DIR -DLARGE_FILE_SUPPORT \
-            -DUNICODE_SUPPORT -DUNICODE_WCHAR -DUTF8_MAYBE_NATIVE -DNO_LCHMOD \
-            -DDATE_FORMAT=DF_YMD -DUSE_BZIP2 -DNOMEMCPY -DNO_WORKING_ISPRINT'
+        DEFINES='-DACORN_FTYPE_NFS -DWILD_STOP_AT_DIR -DLARGE_FILE_SUPPORT -DUNICODE_SUPPORT -DUNICODE_WCHAR -DUTF8_MAYBE_NATIVE -DNO_LCHMOD -DDATE_FORMAT=DF_YMD -DUSE_BZIP2 -DNOMEMCPY -DNO_WORKING_ISPRINT'
         LF2="$LDFLAGS"
     elif [[ $(uname -s) == Darwin ]]; then
         DEFINES="-DUNIX -DBSD -DUSE_BZIP2"
         LF2=""
     fi
 
-
-    echo make -f unix/Makefile \
+    make -f unix/Makefile \
         D_USE_BZ2=-DUSE_BZIP2 \
         L_BZ2=-lbz2 \
-        CF=\"$CFLAGS $CPPFLAGS -I. $DEFINES\" \
-        prefix=\"${_pkgdir}${_prefix}\" \
-        unzips > run.sh
-
-    chmod +x run.sh
-    bash run.sh
+        CF="$CFLAGS $CPPFLAGS -I. $DEFINES" \
+        LF="$LDFLAGS" \
+        prefix="${_prefix}" \
+        unzips
 }
 
 function package() {
+    mkdir -p "${_pkgdir}${_prefix}"
+
+    [[ -f a.out ]] && mv a.out unzip
     make -f unix/Makefile \
         install \
-        prefix="${_pkgdir}${_prefix}"
+        prefix="${_pkgdir}${_prefix}" || spm_debug_shell
 }

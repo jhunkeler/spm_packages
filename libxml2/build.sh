@@ -10,10 +10,13 @@ build_depends=(
     "autoconf"
     "libtool"
     "pkgconf"
+    "python"
 )
 depends=(
     "icu"
     "libiconv"
+    "ncurses"
+    "readline"
     "xz"
     "zlib"
 )
@@ -30,13 +33,17 @@ function prepare() {
 }
 
 function build() {
-    sh autogen.sh
+    NOCONFIGURE=1 sh autogen.sh
     ./configure --prefix="${_prefix}" \
         --with-icu \
+        --with-history \
+        --with-threads \
+        --with-python="${_runtime}/bin/python3"	\
         --with-iconv="${_runtime}" \
         --with-libz="${_runtime}" \
         --with-lzma="${_runtime}"
-    make -j${_maxjobs}
+    sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0 /g' libtool
+    PYTHONHASHSEED=0 make -j${_maxjobs}
 }
 
 function package() {

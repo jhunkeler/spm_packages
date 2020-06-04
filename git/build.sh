@@ -34,7 +34,6 @@ function prepare() {
 
 function build() {
     make configure
-    spm_debug_shell
     ./configure --prefix=${_prefix} \
         --libdir=${_prefix}/lib \
         --with-curl \

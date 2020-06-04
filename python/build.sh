@@ -11,7 +11,6 @@ build_depends=(
     "sed"
     "pkgconf"
     "xz"
-    "tk==8.6.9"
 )
 depends=(
     "bzip2"
@@ -22,12 +21,17 @@ depends=(
     "ncurses"
     "openssl==1.1.1d"
     "tar"
-    "tk==8.6.9"
     "readline"
     "sqlite"
     "zlib"
 )
 [[ $(uname) == Linux ]] && depends+=("e2fsprogs")
+
+if [[ -z $bootstrap ]]; then
+    dep="tk==8.6.9"
+    build_depends+=($dep)
+    depends+=($dep)
+fi
 
 lib_type=so
 
@@ -42,7 +46,11 @@ function prepare() {
 }
 
 function build() {
-    export CFLAGS="${CFLAGS} -I${_runtime}/include/ncursesw"
+    CFLAGS="-I${_runtime}/include/ncursesw ${CFLAGS}"
+    CFLAGS="-I${_runtime}/include/uuid ${CFLAGS}"
+    CPPFLAGS="${CFLAGS}"
+    export CFLAGS
+    export CPPFLAGS
 
     if [[ $(uname -s) == Darwin ]]; then
         CFLAGS="${CFLAGS} -I/usr/X11/include"
@@ -63,7 +71,7 @@ function build() {
         --with-dbmliborder=gdbm:ndbm \
         --with-pymalloc \
         --with-system-expat \
-        --without-ensurepip
+        --without-ensurepip CFLAGS="$CFLAGS" CPPFLAGS="$CPPFLAGS" LDFLAGS="$LDFLAGS"
     make -j${_maxjobs}
 }
 
@@ -72,17 +80,17 @@ function package() {
     echo "Removing __pycache__ directories..."
     find "${_pkgdir}" -name "__pycache__" | xargs rm -rf
 
-    ln -s python3             "${_pkgdir}/${_prefix}"/bin/python
-    ln -s python3-config      "${_pkgdir}/${_prefix}"/bin/python-config
-    ln -s idle3               "${_pkgdir}/${_prefix}"/bin/idle
-    ln -s pydoc3              "${_pkgdir}/${_prefix}"/bin/pydoc
-    ln -s python${_basever}.1 "${_pkgdir}/${_prefix}"/share/man/man1/python.1
+    ln -s python3             "${_pkgdir}${_prefix}"/bin/python
+    ln -s python3-config      "${_pkgdir}${_prefix}"/bin/python-config
+    ln -s idle3               "${_pkgdir}${_prefix}"/bin/idle
+    ln -s pydoc3              "${_pkgdir}${_prefix}"/bin/pydoc
+    ln -s python${_basever}.1 "${_pkgdir}${_prefix}"/share/man/man1/python.1
 
-    if [[ -f "${_pkgdir}/${_prefix}"/lib/libpython${_basever}m.${lib_type} ]]; then
-        chmod 755 "${_pkgdir}/${_prefix}"/lib/libpython${_basever}m.${lib_type}
+    if [[ -f "${_pkgdir}${_prefix}"/lib/libpython${_basever}m.${lib_type} ]]; then
+        chmod 755 "${_pkgdir}${_prefix}"/lib/libpython${_basever}m.${lib_type}
     fi
 
-    if [[ -f "${_pkgdir}/${_prefix}"/lib/libpython${_basever%.*}.${lib_type} ]]; then
-        chmod 755 "${_pkgdir}/${_prefix}"/lib/libpython${_basever%.*}.${lib_type}
+    if [[ -f "${_pkgdir}${_prefix}"/lib/libpython${_basever%.*}.${lib_type} ]]; then
+        chmod 755 "${_pkgdir}${_prefix}"/lib/libpython${_basever%.*}.${lib_type}
     fi
 }
