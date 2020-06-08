@@ -48,8 +48,8 @@ function package() {
         rm -f libbz2.${lib_type}*
 
         # Reconstruct symlinks
-        ln -s libbz2.${lib_format_darwin} libbz2.${lib_format_darwin_short}
-        ln -s libbz2.${lib_format_darwin} libbz2.${lib_type}
+        ln -s -f libbz2.${lib_format_darwin} libbz2.${lib_format_darwin_short}
+        ln -s -f libbz2.${lib_format_darwin} libbz2.${lib_type}
 
         # Reset LC_ID_DYLIB to use expected naming conventions
         install_name_tool -id libbz2.${lib_format_darwin_short} \
@@ -68,7 +68,7 @@ function package() {
 
     # Install binaries
     cp -a bzip2-shared "${_pkgdir}${_prefix}"/bin/bzip2
-    ln -s libbz2.${lib_format} libbz2.${lib_type}
+    ln -s -f libbz2.${lib_format} libbz2.${lib_type}
     cp -a libbz2.${lib_format} "${_pkgdir}${_prefix}"/lib
     cp -a libbz2.${lib_format_short} "${_pkgdir}${_prefix}"/lib
     cp -a libbz2.${lib_type} "${_pkgdir}${_prefix}"/lib
