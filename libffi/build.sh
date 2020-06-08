@@ -1,7 +1,7 @@
 #!/bin/bash
 name=libffi
 version=3.2.1
-revision=0
+revision=1
 sources=(
     ftp://sourceware.org/pub/libffi/${name}-${version}.tar.gz
 )
@@ -31,8 +31,11 @@ function build() {
 
 function package() {
     make install DESTDIR="${_pkgdir}"
-    if [[ -d "${_pkgdir}/${_prefix}/lib64" ]]; then
-        mv "${_pkgdir}/${_prefix}/lib64"/* "${_pkgdir}/${_prefix}/lib"
-        rm -rf "${_pkgdir}/${_prefix}/lib64"
+
+    if [[ -d "${_pkgdir}${_prefix}/lib64" ]]; then
+        mv "${_pkgdir}${_prefix}/lib64"/* "${_pkgdir}${_prefix}/lib"
+        rm -rf "${_pkgdir}${_prefix}/lib64"
     fi
+    mv "${_pkgdir}${_prefix}/lib"/${name}-${version}/include "${_pkgdir}${_prefix}"
+    rm -rf "${_pkgdir}${_prefix}/lib"/${name}-${version}
 }
